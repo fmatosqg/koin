@@ -10,7 +10,7 @@ include 'koin-core-ext'
 // Android
 include 'koin-android'
 include 'koin-android-scope' ,'koin-android-viewmodel'
-include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel'
+include 'koin-androidx-scope','koin-androidx-fragment', 'koin-androidx-viewmodel', 'koin-androidx-workmanager'
 
 // Android Ext
 include 'koin-android-ext'
