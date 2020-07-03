@@ -30,22 +30,27 @@ class KoinWorkerFactory : AbstractWorkerFactory() {
     }
 
 
-    fun createWorker(
-            clazz: Class<out ListenableWorker>,
-            createWorker: Function1<Scope, ListenableWorker>
+    /**
+     * Creates the lambda that will get stored on [AbstractWorkerFactory] and will get called
+     * when the app needs a [ListenableWorker].
+     *
+     */
+    fun addWorker(
+        clazz: Class<out ListenableWorker>,
+        createWorkerLambda: Function1<Scope, ListenableWorker>
     ) {
         addCreator(clazz) { _, params ->
 
             val scope = getKoin()
-                    .getOrCreateScope(
-                            "androidWorkerScope",
-                            named<AbstractWorkerFactory>()
-                    )
+                .getOrCreateScope(
+                    "androidWorkerScope",
+                    named<AbstractWorkerFactory>()
+                )
 
             scope.declare(params)
 
-            createWorker(scope)
-                    .also { scope.close() }
+            createWorkerLambda(scope)
+                .also { scope.close() }
         }
 
     }
@@ -61,9 +66,9 @@ class KoinWorkerFactory : AbstractWorkerFactory() {
 
 
             Configuration.Builder()
-                    .setWorkerFactory(this)
-                    .build()
-                    .let { WorkManager.initialize(context.applicationContext, it) }
+                .setWorkerFactory(this)
+                .build()
+                .let { WorkManager.initialize(context.applicationContext, it) }
 
         }
 

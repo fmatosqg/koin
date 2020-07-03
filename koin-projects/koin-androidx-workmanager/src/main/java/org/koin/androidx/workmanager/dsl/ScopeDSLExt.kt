@@ -11,7 +11,7 @@ import org.koin.dsl.ScopeDSL
  **/
 inline fun <reified T : ListenableWorker> ScopeDSL.worker(crossinline createWorker: Scope.() -> T) {
 
-    KoinWorkerFactory.getInstance().createWorker(T::class.java) { scope ->
+    KoinWorkerFactory.getInstance().addWorker(T::class.java) { scope ->
         scope.createWorker()
     }
 }

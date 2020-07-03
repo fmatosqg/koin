@@ -14,6 +14,6 @@ class DummyService {
     }
 
     suspend fun setAnswer(answer: Int) {
-        channel.send(42)
+        channel.send(answer)
     }
 }

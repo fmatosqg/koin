@@ -1,5 +1,6 @@
 package org.koin.sample.androidx.workmanager
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.ExistingWorkPolicy
@@ -32,7 +33,8 @@ class WorkManagerActivity : AppCompatActivity() {
                             .also {
                                 WorkManager.getInstance(this@WorkManagerActivity)
                                         .enqueueUniqueWork(
-                                                DummyWorker::class.java.canonicalName.toString(),
+                                                DummyWorker::class.java.canonicalName?.toString()
+                                                        ?: "",
                                                 ExistingWorkPolicy.KEEP,
                                                 it
                                         )
@@ -52,6 +54,7 @@ class WorkManagerActivity : AppCompatActivity() {
                     }
 
                     Assert.assertEquals(42, answer)
+                    @SuppressLint("SetTextI18n")
                     workmanager_message.text = "Work Manager completed!"
 
 
