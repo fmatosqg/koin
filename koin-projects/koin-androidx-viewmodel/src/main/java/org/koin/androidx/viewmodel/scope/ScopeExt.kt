@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@
  */
 package org.koin.androidx.viewmodel.scope
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.androidx.viewmodel.ViewModelParameter
 import org.koin.androidx.viewmodel.createViewModelProvider
-import org.koin.androidx.viewmodel.ext.android.getViewModelStore
 import org.koin.androidx.viewmodel.resolveInstance
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -33,36 +32,36 @@ import kotlin.reflect.KClass
  */
 
 inline fun <reified T : ViewModel> Scope.viewModel(
-        owner: LifecycleOwner,
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    owner: ViewModelStoreOwner,
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { getViewModel(owner, T::class, qualifier, parameters) }
 }
 
 inline fun <reified T : ViewModel> Scope.getViewModel(
-        owner: LifecycleOwner,
-        qualifier: Qualifier? = null,
-        noinline parameters: ParametersDefinition? = null
+    owner: ViewModelStoreOwner,
+    qualifier: Qualifier? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(owner, T::class, qualifier, parameters)
 }
 
 fun <T : ViewModel> Scope.getViewModel(
-        owner: LifecycleOwner,
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        parameters: ParametersDefinition? = null
+    owner: ViewModelStoreOwner,
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    parameters: ParametersDefinition? = null
 ): T {
     return getViewModel(
-            ViewModelParameter(
-                    clazz,
-                    qualifier,
-                    parameters,
-                    null,
-                    owner.getViewModelStore(),
-                    null
-            )
+        ViewModelParameter(
+            clazz,
+            qualifier,
+            parameters,
+            null,
+            owner.viewModelStore,
+            null
+        )
     )
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@ package org.koin.androidx.viewmodel.ext.android
 
 import android.content.ComponentCallbacks
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStore
 import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.android.ext.android.getKoin
-import org.koin.androidx.viewmodel.koin.getViewModel
+import org.koin.androidx.viewmodel.StateBundleParameter
+import org.koin.androidx.viewmodel.koin.getStateViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -36,46 +34,38 @@ import kotlin.reflect.KClass
  */
 
 fun <T : ViewModel> SavedStateRegistryOwner.stateViewModel(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        parameters: ParametersDefinition? = null
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    bundle: Bundle? = null,
+    parameters: ParametersDefinition? = null
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(clazz, qualifier, bundle, parameters) }
 }
 
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.stateViewModel(
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    noinline bundle: StateBundleParameter? = null,
+    noinline parameters: ParametersDefinition? = null
 ): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(T::class, qualifier, bundle, parameters) }
+    return lazy(LazyThreadSafetyMode.NONE) { getStateViewModel(T::class, qualifier, bundle?.invoke(), parameters) }
 }
 
 inline fun <reified T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        noinline parameters: ParametersDefinition? = null
+    qualifier: Qualifier? = null,
+    bundle: Bundle? = null,
+    noinline parameters: ParametersDefinition? = null
 ): T {
     return getStateViewModel(T::class, qualifier, bundle, parameters)
 }
 
 fun <T : ViewModel> SavedStateRegistryOwner.getStateViewModel(
-        clazz: KClass<T>,
-        qualifier: Qualifier? = null,
-        bundle: Bundle? = null,
-        parameters: ParametersDefinition? = null
+    clazz: KClass<T>,
+    qualifier: Qualifier? = null,
+    bundle: Bundle? = null,
+    parameters: ParametersDefinition? = null
 ): T {
     val bundleOrDefault: Bundle = bundle ?: Bundle()
-    return getKoin().getViewModel(this, clazz, qualifier, bundleOrDefault, parameters)
-}
-
-fun SavedStateRegistryOwner.getViewModelStore(): ViewModelStore {
-    return when (this) {
-        is FragmentActivity -> this.viewModelStore
-        is Fragment -> this.viewModelStore
-        else -> error("LifecycleOwner is not either FragmentActivity nor Fragment")
-    }
+    return getKoin().getStateViewModel(this, clazz, qualifier, bundleOrDefault, parameters)
 }
 
 private fun LifecycleOwner.getKoin() = (this as ComponentCallbacks).getKoin()

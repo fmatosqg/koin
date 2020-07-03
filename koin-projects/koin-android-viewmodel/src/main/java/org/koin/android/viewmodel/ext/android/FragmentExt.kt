@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package org.koin.android.viewmodel.ext.android
 
 import android.arch.lifecycle.ViewModel
 import android.support.v4.app.Fragment
+import org.koin.android.ext.android.getKoin
+import org.koin.android.viewmodel.koin.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
@@ -52,7 +54,8 @@ fun <T : ViewModel> Fragment.getSharedViewModel(
     qualifier: Qualifier? = null,
     parameters: ParametersDefinition? = null
 ): T {
-    return requireActivity().getViewModel(
+    return getKoin().getViewModel(
+        requireActivity(),
         clazz,
         qualifier,
         parameters

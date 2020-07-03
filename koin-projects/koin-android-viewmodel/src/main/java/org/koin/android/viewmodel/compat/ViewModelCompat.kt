@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.koin.android.viewmodel.compat
 
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelStoreOwner
 import org.koin.android.viewmodel.ext.android.getViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.ParametersDefinition
@@ -40,10 +40,10 @@ object ViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> viewModel(
-            owner: LifecycleOwner,
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        owner: ViewModelStoreOwner,
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): Lazy<T> = owner.viewModel(clazz.kotlin, qualifier, parameters)
 
 
@@ -58,10 +58,10 @@ object ViewModelCompat {
     @JvmOverloads
     @JvmStatic
     fun <T : ViewModel> getViewModel(
-            owner: LifecycleOwner,
-            clazz: Class<T>,
-            qualifier: Qualifier? = null,
-            parameters: ParametersDefinition? = null
+        owner: ViewModelStoreOwner,
+        clazz: Class<T>,
+        qualifier: Qualifier? = null,
+        parameters: ParametersDefinition? = null
     ): T {
         return owner.getViewModel(clazz.kotlin, qualifier, parameters)
     }

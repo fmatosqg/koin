@@ -22,6 +22,7 @@ import org.koin.sample.androidx.components.mvvm.ExtSimpleViewModel
 import org.koin.sample.androidx.components.mvvm.SavedStateViewModel
 import org.koin.sample.androidx.components.mvvm.SimpleViewModel
 import org.koin.sample.androidx.components.scope.Session
+import org.koin.sample.androidx.components.scope.SessionActivity
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.mvvm.MVVMActivity
 import org.koin.sample.androidx.mvvm.MVVMFragment
@@ -61,9 +62,9 @@ val mvvmModule = module {
         viewModel<ExtSimpleViewModel>(named("ext"))
         viewModel(named("vm2")) { (handle: SavedStateHandle, id: String) ->
             SavedStateViewModel(
-                    handle,
-                    id,
-                    get()
+                handle,
+                id,
+                get()
             )
         }
     }
@@ -77,8 +78,10 @@ val scopeModule = module {
             println("Scoped -SCOPE_SESSION- release = ${Counter.released}")
         }
     }
+
     scope<ScopedActivityA> {
         scoped { Session() }
+        scoped { SessionActivity(get()) }
     }
 }
 
@@ -89,3 +92,6 @@ val workerModule = module {
 val workerScopedModule = workerModule {
     worker { DummyWorker(get(), get(), get()) }
 }
+
+val allModules =
+    appModule + mvpModule + mvvmModule + scopeModule + workerModule + workerScopedModule

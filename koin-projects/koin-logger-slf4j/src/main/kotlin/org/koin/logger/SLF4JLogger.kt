@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,15 +32,16 @@ class SLF4JLogger(level: Level = Level.INFO) : Logger(level) {
 
     override fun log(level: Level, msg: MESSAGE) {
         if (this.level <= level) {
-            LogOnLevel(msg)
+            logOnLevel(msg)
         }
     }
 
-    private fun LogOnLevel(msg: MESSAGE) {
+    private fun logOnLevel(msg: MESSAGE) {
         when (this.level) {
             Level.DEBUG -> logger.debug(msg)
             Level.INFO -> logger.info(msg)
             Level.ERROR -> logger.error(msg)
+            else -> logger.error(msg)
         }
     }
 }

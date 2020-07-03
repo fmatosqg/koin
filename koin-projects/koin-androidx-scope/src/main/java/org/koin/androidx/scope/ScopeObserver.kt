@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class ScopeObserver(val event: Lifecycle.Event, val target: Any, val scope: Scop
         LifecycleObserver, KoinComponent {
 
     /**
-     * Handle ON_DESTROY to release Koin modules
+     * Handle ON_STOP to release Koin modules
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onStop() {

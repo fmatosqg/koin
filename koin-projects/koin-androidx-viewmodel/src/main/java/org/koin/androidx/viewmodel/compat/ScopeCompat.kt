@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 the original author or authors.
+ * Copyright 2017-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.koin.androidx.viewmodel.compat
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.androidx.viewmodel.scope.getViewModel
 import org.koin.core.parameter.ParametersDefinition
 import org.koin.core.qualifier.Qualifier
@@ -41,7 +42,7 @@ object ScopeCompat {
     @JvmStatic
     fun <T : ViewModel> viewModel(
             scope: Scope,
-            owner: LifecycleOwner,
+            owner: ViewModelStoreOwner,
             clazz: Class<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
@@ -59,7 +60,7 @@ object ScopeCompat {
     @JvmStatic
     fun <T : ViewModel> getViewModel(
             scope: Scope,
-            owner: LifecycleOwner,
+            owner: ViewModelStoreOwner,
             clazz: Class<T>,
             qualifier: Qualifier? = null,
             parameters: ParametersDefinition? = null
