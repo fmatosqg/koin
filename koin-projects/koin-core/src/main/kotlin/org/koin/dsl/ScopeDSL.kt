@@ -44,6 +44,7 @@ class ScopeDSL(val scopeDefinition: ScopeDefinition) {
         return Definitions.saveSingle(
             qualifier,
             definition,
+            null,
             scopeDefinition,
             Options(isCreatedAtStart = false, override = override)
         )
@@ -61,4 +62,6 @@ class ScopeDSL(val scopeDefinition: ScopeDefinition) {
             Options(isCreatedAtStart = false, override = override)
         )
     }
+
+
 }

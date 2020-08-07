@@ -17,6 +17,7 @@
 
 package org.koin.core.instance
 
+
 import org.koin.core.Koin
 import org.koin.core.definition.BeanDefinition
 import org.koin.core.error.InstanceCreationException
@@ -35,6 +36,25 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
      * @return T
      */
     abstract fun get(context: InstanceContext): T
+
+    suspend open fun create2(context: InstanceContext): T? {
+        if (_koin._logger.isAt(Level.DEBUG)) {
+            _koin._logger.debug("| create instance for $beanDefinition")
+        }
+        try {
+            val parameters: DefinitionParameters = context.parameters
+            return beanDefinition.definition2?.invoke(
+                context.scope,
+                parameters
+            )
+        } catch (e: Exception) {
+            val stack =
+                e.toString() + ERROR_SEPARATOR + e.stackTrace.takeWhile { !it.className.contains("sun.reflect") }
+                    .joinToString(ERROR_SEPARATOR)
+            _koin._logger.error("Instance creation error : could not create instance for $beanDefinition: $stack")
+            throw InstanceCreationException("Could not create instance for $beanDefinition", e)
+        }
+    }
 
     /**
      * Create an instance
@@ -72,5 +92,9 @@ abstract class InstanceFactory<T>(private val _koin: Koin, val beanDefinition: B
 
     companion object {
         const val ERROR_SEPARATOR = "\n\t"
+    }
+
+    open suspend fun get2(context: InstanceContext): T {
+        return get(context)
     }
 }

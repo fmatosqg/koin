@@ -36,6 +36,7 @@ data class BeanDefinition<T>(
         val primaryType: KClass<*>,
         val qualifier: Qualifier? = null,
         val definition: Definition<T>,
+        val definition2: SuspendDefinition<T>?,
         val kind: Kind,
         val secondaryTypes: List<KClass<*>> = listOf(),
         val options: Options = Options(),
@@ -100,4 +101,5 @@ enum class Kind {
 }
 
 typealias IndexKey = String
-typealias Definition<T> = Scope.(DefinitionParameters) -> T
+typealias Definition<T> =    Scope.(DefinitionParameters) -> T
+typealias SuspendDefinition<T> = suspend Scope.(DefinitionParameters) -> T

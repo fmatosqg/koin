@@ -9,10 +9,13 @@ object Definitions {
     inline fun <reified T> saveSingle(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
+        noinline definition2: SuspendDefinition<T>?,
         scopeDefinition: ScopeDefinition,
+
         options: Options
     ): BeanDefinition<T> {
-        val beanDefinition = createSingle(qualifier, definition, scopeDefinition, options)
+        val beanDefinition =
+            createSingle(qualifier, definition, definition2, scopeDefinition, options)
         scopeDefinition.save(beanDefinition)
         return beanDefinition
     }
@@ -20,6 +23,7 @@ object Definitions {
     inline fun <reified T> createSingle(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
+        noinline definition2: SuspendDefinition<T>?,
         scopeDefinition: ScopeDefinition,
         options: Options,
         secondaryTypes: List<KClass<*>> = emptyList()
@@ -29,6 +33,7 @@ object Definitions {
             T::class,
             qualifier,
             definition,
+            definition2,
             Kind.Single,
             options = options,
             secondaryTypes = secondaryTypes
@@ -39,6 +44,7 @@ object Definitions {
         clazz: KClass<*>,
         qualifier: Qualifier? = null,
         definition: Definition<*>,
+        definition2: SuspendDefinition<*>,
         scopeDefinition: ScopeDefinition,
         options: Options,
         secondaryTypes: List<KClass<*>> = emptyList()
@@ -48,6 +54,7 @@ object Definitions {
             clazz,
             qualifier,
             definition,
+            definition2,
             Kind.Single,
             options = options,
             secondaryTypes = secondaryTypes
@@ -57,6 +64,7 @@ object Definitions {
     inline fun <reified T> createFactory(
         qualifier: Qualifier? = null,
         noinline definition: Definition<T>,
+        noinline definition2: SuspendDefinition<T>?,
         scopeDefinition: ScopeDefinition,
         options: Options,
         secondaryTypes: List<KClass<*>> = emptyList()
@@ -66,6 +74,7 @@ object Definitions {
             T::class,
             qualifier,
             definition,
+            definition2,
             Kind.Factory,
             options = options,
             secondaryTypes = secondaryTypes
@@ -78,8 +87,9 @@ object Definitions {
         scopeDefinition: ScopeDefinition,
         options: Options
     ): BeanDefinition<T> {
-        val beanDefinition = createFactory(qualifier, definition, scopeDefinition, options)
+        val beanDefinition = createFactory(qualifier, definition, null, scopeDefinition, options)
         scopeDefinition.save(beanDefinition)
         return beanDefinition
     }
+
 }

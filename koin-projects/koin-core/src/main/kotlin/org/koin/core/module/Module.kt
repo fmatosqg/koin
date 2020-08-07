@@ -15,10 +15,7 @@
  */
 package org.koin.core.module
 
-import org.koin.core.definition.BeanDefinition
-import org.koin.core.definition.Definition
-import org.koin.core.definition.Definitions
-import org.koin.core.definition.Options
+import org.koin.core.definition.*
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.TypeQualifier
 import org.koin.core.scope.ScopeDefinition
@@ -31,8 +28,8 @@ import org.koin.dsl.ScopeDSL
  * @author Arnaud Giuliani
  */
 class Module(
-        val createAtStart: Boolean,
-        val override: Boolean
+    val createAtStart: Boolean,
+    val override: Boolean
 ) {
     val rootScope: ScopeDefinition = ScopeDefinition.rootDefinition()
     var isLoaded: Boolean = false
@@ -66,21 +63,33 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> single(
-            qualifier: Qualifier? = null,
-            createdAtStart: Boolean = false,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        createdAtStart: Boolean = false,
+        override: Boolean = false,
+        coroutine: Boolean = false,
+        noinline definition2: SuspendDefinition<T>? = null,
+        noinline definition: Definition<T>
+
     ): BeanDefinition<T> {
         return Definitions.saveSingle(
-                qualifier,
-                definition,
-                rootScope,
-                makeOptions(override, createdAtStart)
+            qualifier,
+            definition,
+            definition2,
+            rootScope,
+            makeOptions(override, createdAtStart, coroutine = coroutine)
+
         )
     }
 
-    fun makeOptions(override: Boolean, createdAtStart: Boolean = false): Options =
-            Options(this.createAtStart || createdAtStart, this.override || override)
+    fun makeOptions(
+        override: Boolean,
+        createdAtStart: Boolean = false,
+        coroutine: Boolean = false
+    ): Options =
+        Options(
+            this.createAtStart || createdAtStart, this.override || override,
+            coroutine = coroutine
+        )
 
     /**
      * Declare a Factory definition
@@ -89,9 +98,9 @@ class Module(
      * @param definition - definition function
      */
     inline fun <reified T> factory(
-            qualifier: Qualifier? = null,
-            override: Boolean = false,
-            noinline definition: Definition<T>
+        qualifier: Qualifier? = null,
+        override: Boolean = false,
+        noinline definition: Definition<T>
     ): BeanDefinition<T> {
         return Definitions.saveFactory(qualifier, definition, rootScope, makeOptions(override))
     }

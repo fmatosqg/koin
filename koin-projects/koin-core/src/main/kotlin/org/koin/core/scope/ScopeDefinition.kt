@@ -54,6 +54,7 @@ class ScopeDefinition(val qualifier: Qualifier, val isRoot: Boolean = false, pri
                 clazz,
                 qualifier,
                 { instance },
+                {instance },
                 this,
                 Options(isCreatedAtStart = false, override = override),
                 secondaryTypes ?: emptyList()

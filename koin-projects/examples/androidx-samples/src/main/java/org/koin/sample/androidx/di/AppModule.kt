@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import org.koin.androidx.experimental.dsl.viewModel
 import org.koin.androidx.fragment.dsl.fragment
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.workmanager.dsl.factorySlow
+import org.koin.androidx.workmanager.dsl.slowBuild
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.androidx.workmanager.dsl.workerModule
 import org.koin.core.qualifier.named
@@ -87,6 +89,11 @@ val scopeModule = module {
 
 val workerModule = module {
     single { DummyService() }
+
+    factorySlow(named("one")) { slowBuild() }
+    factorySlow(named("two")) { slowBuild() }
+    factorySlow(named("three")) { slowBuild() }
+    factorySlow(named("four")) { slowBuild() }
 }
 
 val workerScopedModule = workerModule {

@@ -49,4 +49,11 @@ class SingleInstanceFactory<T>(koin: Koin, beanDefinition: BeanDefinition<T>) :
         }
         return value ?: error("Single instance created couldn't return value")
     }
+
+    suspend override fun get2(context: InstanceContext): T {
+        if (!isCreated()) {
+            value = create2(context)
+        }
+        return value ?: error("Single instance created couldn't return value")
+    }
 }

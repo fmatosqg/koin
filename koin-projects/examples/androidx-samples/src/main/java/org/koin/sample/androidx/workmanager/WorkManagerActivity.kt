@@ -10,6 +10,8 @@ import kotlinx.android.synthetic.main.workmanager_activity.*
 import kotlinx.coroutines.*
 import org.junit.Assert
 import org.koin.android.ext.android.inject
+import org.koin.androidx.workmanager.dsl.Payload
+import org.koin.core.qualifier.named
 import org.koin.sample.android.R
 import org.koin.sample.androidx.mvp.MVPActivity
 import org.koin.sample.androidx.utils.navigateTo
@@ -21,45 +23,48 @@ import org.koin.sample.androidx.utils.navigateTo
 class WorkManagerActivity : AppCompatActivity() {
 
     private val dummyService: DummyService by inject()
+    private val d1: Payload by inject(named("one"))
+    private val d2: Payload by inject(named("two"))
+    private val d3: Payload by inject(named("three"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         CoroutineScope(Dispatchers.IO)
-                .launch {
+            .launch {
 
-                    OneTimeWorkRequestBuilder<DummyWorker>()
-                            .build()
-                            .also {
-                                WorkManager.getInstance(this@WorkManagerActivity)
-                                        .enqueueUniqueWork(
-                                                DummyWorker::class.java.canonicalName?.toString()
-                                                        ?: "",
-                                                ExistingWorkPolicy.KEEP,
-                                                it
-                                        )
-                            }
-
-                }
-
-        CoroutineScope(Dispatchers.Main)
-                .launch {
-
-                    val answer = try {
-                        withTimeout(2_000) {
-                            dummyService.getAnswer()
-                        }
-                    } catch (e: CancellationException) {
-                        throw RuntimeException(e) // taking too long to receive 42 means WorkManager failed somehow
+                OneTimeWorkRequestBuilder<DummyWorker>()
+                    .build()
+                    .also {
+                        WorkManager.getInstance(this@WorkManagerActivity)
+                            .enqueueUniqueWork(
+                                DummyWorker::class.java.canonicalName?.toString()
+                                    ?: "",
+                                ExistingWorkPolicy.KEEP,
+                                it
+                            )
                     }
 
-                    Assert.assertEquals(42, answer)
-                    @SuppressLint("SetTextI18n")
-                    workmanager_message.text = "Work Manager completed!"
+            }
 
+        CoroutineScope(Dispatchers.Main)
+            .launch {
 
-                    workmanager_button.isEnabled = true
+                val answer = try {
+                    withTimeout(2_000) {
+                        dummyService.getAnswer()
+                    }
+                } catch (e: CancellationException) {
+                    throw RuntimeException(e) // taking too long to receive 42 means WorkManager failed somehow
                 }
+
+                Assert.assertEquals(42, answer)
+                @SuppressLint("SetTextI18n")
+                workmanager_message.text = "Work Manager completed!" + d1 + d2 + d3
+
+
+                workmanager_button.isEnabled = true
+            }
 
 
         setContentView(R.layout.workmanager_activity)
