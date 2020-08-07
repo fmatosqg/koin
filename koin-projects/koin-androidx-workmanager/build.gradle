@@ -3,8 +3,8 @@ apply plugin: 'kotlin-android'
 
 ext {
     android_sourceSet = true
-    pom_name = "koin-androidx-viewmodel"
-    pom_description = "Koin project - koin-androidx-viewmodel"
+    pom_name = "koin-androidx-workmanager"
+    pom_description = "Koin project - koin-androidx-workmanager"
 }
 
 android {
